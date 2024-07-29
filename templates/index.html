@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Personalized Recommendation System</title>
+</head>
+<body>
+    <h1>Get Recommendations</h1>
+    <form id="recommendationForm">
+        <label for="user_id">User ID:</label>
+        <input type="text" id="user_id" name="user_id"><br><br>
+        <label for="item_id">Item ID:</label>
+        <input type="text" id="item_id" name="item_id"><br><br>
+        <button type="submit">Get Recommendations</button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('recommendationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const userId = document.getElementById('user_id').value;
+            const itemId = document.getElementById('item_id').value;
+            
+            fetch('/recommend', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ user_id: userId, item_id: itemId })
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerText = 'Recommended Items: ' + data.recommended_items.join(', ');
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
