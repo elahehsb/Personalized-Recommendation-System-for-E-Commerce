@@ -1,3 +1,7 @@
+# Collaborative Filtering (Matrix Factorization)
+# -------------------------------------------------
+
+
 from sklearn.decomposition import NMF
 
 # Create user-item matrix
@@ -20,3 +24,18 @@ def recommend_items(user_id, top_n=10):
     predictions = user_ratings.index.map(lambda item: predict_rating(user_id, item))
     recommended_items = pd.Series(predictions, index=user_ratings.index).sort_values(ascending=False).head(top_n)
     return recommended_items.index
+
+# Content-Based Filtering
+# -------------------------------------------------
+
+# Compute cosine similarity between product descriptions
+cosine_sim = cosine_similarity(tfidf_matrix, tfidf_matrix)
+
+# Generate recommendations based on content similarity
+def recommend_content_based(item_id, top_n=10):
+    idx = products.index[products['itemId'] == item_id].tolist()[0]
+    sim_scores = list(enumerate(cosine_sim[idx]))
+    sim_scores = sorted(sim_scores, key=lambda x: x[1], reverse=True)
+    sim_scores = sim_scores[1:top_n+1]
+    item_indices = [i[0] for i in sim_scores]
+    return products['itemId'].iloc[item_indices]
